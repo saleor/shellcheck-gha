@@ -1,0 +1,44 @@
+[tool.poetry]
+name = "shellcheck-gha"
+description = "Extracts and checks shell scripts in Github Workflows for potential issues using shellcheck (https://github.com/koalaman/shellcheck)."
+readme = "README.md"
+version = "0.1.0"
+authors = ["Saleor Commerce <hello@saleor.io>"]
+license = "BSD-3-Clause"
+repository = "https://github.com/saleor/shellcheck-gha"
+keywords = [
+    "linter",
+    "static-analysis",
+    "shell",
+    "bash",
+    "dash",
+    "github",
+    "workflows",
+    "shellcheck",
+]
+classifiers = [
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Development Status :: 1 - Planning",
+    "Topic :: Security",
+    "Environment :: Console",
+    "Software Development :: Quality Assurance",
+]
+
+[tool.poetry.scripts]
+shellcheck-gha = "shellcheck_gha.console.app:main"
+
+[tool.poetry.dependencies]
+python = ">=3.11"
+pydantic = "^2.6.0"
+jinja2 = "^3.1.3"
+pyyaml = "^6.0.1"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.0.2"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
