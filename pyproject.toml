@@ -24,7 +24,7 @@ classifiers = [
     "Development Status :: 1 - Planning",
     "Topic :: Security",
     "Environment :: Console",
-    "Software Development :: Quality Assurance",
+    "Topic :: Software Development :: Quality Assurance",
 ]
 
 [tool.poetry.scripts]
