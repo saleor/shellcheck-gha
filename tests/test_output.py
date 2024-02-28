@@ -27,7 +27,7 @@ def test_render_findings_human():
     Message: Double quote to prevent globbing and word splitting.
     More information: https://www.shellcheck.net/wiki/SC2086
     Code:
-        echo $BAD_JOB1
+        echo $BAD_JOB2
              ^^^^^^^^^^
 """
     assert actual == expected

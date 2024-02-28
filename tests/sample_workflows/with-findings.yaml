@@ -27,8 +27,8 @@ jobs:
 
       - run: |
           ls .
-          echo $BAD_JOB1
+          echo $BAD_JOB2
 
       - run:
           ls .
-          echo "$GOOD_JOB1"
+          echo "$GOOD_JOB2"
