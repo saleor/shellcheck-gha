@@ -8,6 +8,17 @@ shellcheck-gha
 This Python script extracts shell scripts from GitHub workflows
 (`jobs.<job_id>.steps[*].run`) and runs them against [ShellCheck].
 
+<!-- TOC -->
+* [shellcheck-gha](#shellcheck-gha)
+  * [Installation](#installation)
+    * [PyPI (recommended)](#pypi-recommended)
+    * [From Source](#from-source)
+  * [Usage](#usage)
+  * [Example](#example)
+  * [Goals](#goals)
+  * [Non-Goals](#non-goals)
+<!-- TOC -->
+
 ## Installation
 
 **Requirements:**
@@ -15,7 +26,7 @@ This Python script extracts shell scripts from GitHub workflows
 - Python ≥ 3.11
 - [ShellCheck] ≥ 0.9.0, available on `apt`, `brew`, `cabal`, `dnf`, and `pkg`.
 
-### PyPI (prefered)
+### PyPI (recommended)
 
 The project is hosted on PyPI at https://pypi.org/project/shellcheck-gha/.
 To install the project, run:
