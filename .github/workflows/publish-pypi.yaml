@@ -69,7 +69,7 @@ jobs:
           version="${GITHUB_REF#refs/tags/}"
 
           # Validate the tag starts with "v<major>.<minor>.<patch>"
-          if [[ ! "$version" =~ ^v[0-9]\.[0-9]\.[0-9] ]]; then
+          if [[ ! "$version" =~ ^v[0-9]+\.[0-9]+\.[0-9]+ ]]; then
             echo "Expected the tag to start with vX.X but found '${version}'" >&2
             exit 1
           fi
