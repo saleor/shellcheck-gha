@@ -44,12 +44,53 @@ jobs:
           if-no-files-found: error
           retention-days: 5
 
+  push-tags:
+    runs-on: ubuntu-22.04
+    environment: publish-tags
+
+    # Only publish tags when it's a release,
+    # or when pushing to PyPI production (not test PyPI).
+    if: github.event_name == 'release' || (github.event_name == 'workflow_dispatch' && github.event.inputs.pypi_repo == 'pypi')
+
+    permissions:
+      contents: write
+
+    needs:
+      # Ensure the build succeeds before pushing additional tags.
+      - build
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+
+      - shell: bash
+        name: Update Major Version Tag
+        run: |
+          version="${GITHUB_REF#refs/tags/}"
+
+          # Validate the tag starts with "v<major>.<minor>.<patch>"
+          if [[ ! "$version" =~ ^v[0-9]\.[0-9]\.[0-9] ]]; then
+            echo "Expected the tag to start with vX.X but found '${version}'" >&2
+            exit 1
+          fi
+          
+          # v0.1.0 -> v0
+          # v1.2.3 -> v1
+          # etc.
+          short_tag=$(echo "$version" | cut -d. -f1)
+          
+          # --force is needed in order to replace the tags.
+          # Note: --force-with-lease doesn't work for replacing tags.
+          git tag --force "$short_tag"
+          git push origin --force "refs/tags/${short_tag}"
+
   publish:
     runs-on: ubuntu-22.04
     environment: publish-pypi
 
     needs:
       - build
+      - push-tags
 
     permissions:
       id-token: write  # Required for PyPI trusted publishing

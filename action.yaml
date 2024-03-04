@@ -1,0 +1,47 @@
+name: ShellCheck GitHub Workflows
+description: >
+  Extracts and checks shell scripts in Github Workflows for potential issues
+  using ShellCheck.
+inputs:
+  scan-directory-path:
+    default: .github/workflows
+    description: The directory containing GitHub workflows YAML files to scan.
+    required: false
+runs:
+  using: composite
+
+  steps:
+    - name: Setup Python
+      uses: actions/setup-python@0a5c61591373683505ea898e09a3ea4f39ef2b9c # v5.0.0
+      with:
+        python-version-file: ${{ github.action_path }}/.github/requirements/python-version.txt
+
+    - name: Install Dependencies
+      shell: bash
+      working-directory: ${{ github.action_path }}
+      # Groups allow to collapse by default the noisy installation steps.
+      # It's a mitigation for this: https://github.com/orgs/community/discussions/21276.
+      run: |
+        echo "::group::Install Dependencies"
+        python -m pip install -r .github/requirements/requirements-poetry.txt
+        poetry env use "$(which python)"
+        poetry install
+        echo "$(poetry env info -p)"/bin >> "$GITHUB_PATH"
+        echo "::endgroup::"
+
+    - name: ShellCheck Version
+      shell: bash
+      run: |
+        shellcheck --version
+
+    - name: Run ShellCheck
+      shell: bash
+      env:
+        SCAN_DIRECTORY: ${{ inputs.scan-directory-path }}
+      run: |
+        set -u -o pipefail
+        
+        cmd_args=()
+        test -z "${RUNNER_DEBUG+x}" || cmd_args+=( "--debug" )
+        
+        shellcheck-gha "${cmd_args[@]}" -- "$SCAN_DIRECTORY"
