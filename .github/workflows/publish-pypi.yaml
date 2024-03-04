@@ -48,9 +48,9 @@ jobs:
     runs-on: ubuntu-22.04
     environment: publish-tags
 
-    # Only publish tags when it's a release,
-    # or when pushing to PyPI production (not test PyPI).
-    if: github.event_name == 'release' || (github.event_name == 'workflow_dispatch' && github.event.inputs.pypi_repo == 'pypi')
+    # Only publish tags when it's a final/stable release.
+    # If it's a pre-released then `github.event.action` is set to 'prereleased'.
+    if: github.event_name == 'release' && github.event.action == 'released'
 
     permissions:
       contents: write
@@ -68,8 +68,8 @@ jobs:
         run: |
           version="${GITHUB_REF#refs/tags/}"
 
-          # Validate the tag starts with "v<major>.<minor>.<patch>"
-          if [[ ! "$version" =~ ^v[0-9]+\.[0-9]+\.[0-9]+ ]]; then
+          # Validate the tag is "v<major>.<minor>.<patch>"
+          if [[ ! "$version" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
             echo "Expected the tag to start with vX.X but found '${version}'" >&2
             exit 1
           fi
@@ -90,7 +90,6 @@ jobs:
 
     needs:
       - build
-      - push-tags
 
     permissions:
       id-token: write  # Required for PyPI trusted publishing
