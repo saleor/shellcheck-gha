@@ -11,7 +11,8 @@ This Python script extracts shell scripts from GitHub workflows
 <!-- TOC -->
 * [shellcheck-gha](#shellcheck-gha)
   * [Installation](#installation)
-    * [PyPI (recommended)](#pypi-recommended)
+    * [Using GitHub Actions (recommended)](#using-github-actions-recommended)
+    * [PyPI](#pypi)
     * [From Source](#from-source)
   * [Usage](#usage)
   * [Example](#example)
@@ -26,7 +27,34 @@ This Python script extracts shell scripts from GitHub workflows
 - Python ≥ 3.11
 - [ShellCheck] ≥ 0.9.0, available on `apt`, `brew`, `cabal`, `dnf`, and `pkg`.
 
-### PyPI (recommended)
+### Using GitHub Actions (recommended)
+
+The `shellcheck-gha` project can be used as a GitHub Workflow step:
+
+```yaml
+on:
+  push:
+    paths:
+      - .github/workflows/**
+  pull_request:
+    paths:
+      - .github/workflows/**
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Run ShellCheck
+        uses: saleor/shellcheck-gha@v0
+```
+
+### PyPI
 
 The project is hosted on PyPI at https://pypi.org/project/shellcheck-gha/.
 To install the project, run:
@@ -85,7 +113,7 @@ Scanned 5 files (16 shell scripts)
     Message: Double quote to prevent globbing and word splitting.
     More information: https://www.shellcheck.net/wiki/SC2086
     Code:
-        echo $BAD_JOB1
+        echo $BAD_JOB2
              ^^^^^^^^^^
 ```
 
