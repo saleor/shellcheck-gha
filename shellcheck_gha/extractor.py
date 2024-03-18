@@ -42,8 +42,12 @@ class Extractor:
 
     def iter_workflow_paths(self):
         """Yields all yaml files recursively."""
-        for path in self.directory.rglob("*.y[a]ml"):
-            if path.is_file() and not path.is_symlink():
+        for path in self.directory.rglob("*"):
+            if (
+                path.is_file()
+                and not path.is_symlink()
+                and (path.name.endswith(".yml") or path.name.endswith(".yaml"))
+            ):
                 yield path
 
     @staticmethod
