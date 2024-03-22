@@ -1,0 +1,14 @@
+name: Sample Composite Action
+description: A dummy GitHub Composite Action
+
+runs:
+  using: "composite"
+  steps:
+    # Should ignore/skip references to other actions as they are not shell snippets.
+    - uses: actions/checkout@v4
+
+    - run: echo $BAD_COMPOSITE_ACTION
+      shell: bash
+
+    - run: echo "$GOOD_COMPOSITE_ACTION"
+      shell: bash
