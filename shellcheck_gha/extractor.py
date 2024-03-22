@@ -6,7 +6,7 @@ from pathlib import Path
 
 import yaml
 
-from shellcheck_gha.models.github_workflow import GitHubYAML, ShellSnippet
+from shellcheck_gha.models.github_action import GitHubYAML, ShellSnippet
 from shellcheck_gha.models.shell_check_json1 import ShellCheckOutput
 
 logger = logging.getLogger(__name__)

@@ -2,7 +2,7 @@ from pathlib import Path
 
 import pytest
 
-from models.github_workflow import GitHubYAML, UnknownYAMLFileException
+from models.github_action import GitHubYAML, UnknownYAMLFileException
 
 
 def test_iter_shell_scripts_raises_on_unknown_file_type():
