@@ -10,7 +10,7 @@ TTY_TEMPLATE = """\
 {% for finding in findings %}\
 {% for comment in finding.shellcheck_data.comments %}\
 {% set color = comment.level | level_ansi_code %}\
-[{{ comment.level | upper | wrap_color(color) }}] In {{finding.shell_snippet.workflow_path}}:
+[{{ comment.level | upper | wrap_color(color) }}] In {{finding.shell_snippet.yaml_path}}:
     Message: {{ comment.message }}
     More information: https://www.shellcheck.net/wiki/SC{{ comment.code }}
     Code:

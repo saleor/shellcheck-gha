@@ -6,27 +6,13 @@ from pathlib import Path
 
 import yaml
 
-from shellcheck_gha.models.github_workflow import GitHubWorkflow, GitHubStepRun
+from shellcheck_gha.models.github_action import GitHubYAML, ShellSnippet
 from shellcheck_gha.models.shell_check_json1 import ShellCheckOutput
 
 logger = logging.getLogger(__name__)
 
 SUPPORTED_SHELLS = ["sh", "bash", "dash", "ksh"]
 DEFAULT_SHELL = "bash"
-
-
-@dataclasses.dataclass
-class ShellSnippet:
-    workflow_path: Path
-
-    job_id: str  # The value from jobs.<job_id>.
-    step_id: str  # The value from jobs.<job_id>.steps[*].id.
-    step_number: int  # The nth position of the step inside the job.
-
-    step_specs: GitHubStepRun
-
-    def __str__(self):
-        return f"{self.workflow_path}:jobs.{self.job_id}.steps[{self.step_number}]"
 
 
 @dataclasses.dataclass
@@ -49,26 +35,6 @@ class Extractor:
                 and (path.name.endswith(".yml") or path.name.endswith(".yaml"))
             ):
                 yield path
-
-    @staticmethod
-    def iter_shell_scripts(workflow_file: Path):
-        """Yields all shell script steps contained within a GitHub workflow YAML file."""
-        with workflow_file.open() as fp:
-            contents = yaml.safe_load(fp)
-
-        obj = GitHubWorkflow.model_validate(contents)
-        for job_id, job_defs in obj.jobs.items():
-            for step_num, step in enumerate(job_defs.steps):
-                if not step.run:
-                    continue
-
-                yield ShellSnippet(
-                    workflow_path=workflow_file,
-                    job_id=job_id,
-                    step_id=step.id,
-                    step_number=step_num,
-                    step_specs=step,
-                )
 
     def check_snippet(self, snippet: ShellSnippet) -> Finding | None:
         """
@@ -126,11 +92,14 @@ class Extractor:
         num_snippets_scanned: int = 0
 
         logger.info("Scanning the directory: %s", self.directory)
-        for workflow in self.iter_workflow_paths():
+        for yaml_path in self.iter_workflow_paths():
             num_files_scanned += 1
-            logger.info("Checking the workflow: %s", workflow)
+            logger.info("Checking the YAML file: %s", yaml_path)
 
-            for snippet in self.iter_shell_scripts(workflow):
+            with yaml_path.open() as fp:
+                parsed_yaml = GitHubYAML.model_validate(yaml.safe_load(fp))
+
+            for snippet in parsed_yaml.iter_shell_scripts(yaml_path):
                 num_snippets_scanned += 1
                 finding = self.check_snippet(snippet)
 
