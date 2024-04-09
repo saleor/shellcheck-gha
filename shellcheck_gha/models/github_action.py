@@ -76,5 +76,6 @@ class GitHubYAML(BaseModel):
             # This code should never be reached unless a non-GitHub workflow or action
             # YAML file was provided to the CLI.
             raise UnknownYAMLFileException(
-                "The YAML file should contain either 'jobs' or 'runs'."
+                "The YAML file should contain either 'jobs' or 'runs'.",
+                yaml_path,
             )

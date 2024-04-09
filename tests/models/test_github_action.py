@@ -13,8 +13,12 @@ def test_iter_shell_scripts_raises_on_unknown_file_type():
     """
 
     parsed = GitHubYAML.model_validate({"foo": "bar"})
+    yaml_path = Path("dummy")
 
     with pytest.raises(UnknownYAMLFileException) as exc:
-        list(parsed.iter_shell_scripts(Path("dummy")))
+        list(parsed.iter_shell_scripts(yaml_path))
 
-    assert exc.value.args == ("The YAML file should contain either 'jobs' or 'runs'.",)
+    assert exc.value.args == (
+        "The YAML file should contain either 'jobs' or 'runs'.",
+        yaml_path,
+    )
