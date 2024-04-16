@@ -28,6 +28,17 @@ def parse_args(args: list[str] | None) -> argparse.Namespace:
         action="store_true",
         help="Add debug information (takes precedence over --verbose).",
     )
+    parser.add_argument(
+        "--skip-unknown-files",
+        action=argparse.BooleanOptionalAction,
+        help=(
+            "Whether to exit with an error on when parsing non-GitHub workflow "
+            "or composite action YAML files. Skipping is useful when a directory "
+            "may be mixed with other YAML files "
+            "(e.g. config files such as .github/dependabot.yaml)."
+        ),
+        default=True,
+    )
     return parser.parse_args(args)
 
 
@@ -53,6 +64,7 @@ def main(out=sys.stdout, args: list[str] | None = None) -> None:
     num_files_scanned, num_snippets_scanned, findings = Extractor(
         directory=directory,
         default_shell=ns.default_shell,
+        raise_on_unsupported_yaml=not ns.skip_unknown_files,
     ).run()
 
     print(f"=== Results: {len(findings)} file(s) have findings ===")
