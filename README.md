@@ -35,10 +35,10 @@ The `shellcheck-gha` project can be used as a GitHub Workflow step:
 on:
   push:
     paths:
-      - .github/workflows/**
+      - .github/**
   pull_request:
     paths:
-      - .github/workflows/**
+      - .github/**
 
 permissions:
   contents: read
@@ -52,7 +52,16 @@ jobs:
 
       - name: Run ShellCheck
         uses: saleor/shellcheck-gha@v0
+        # Uncomment to customize the scan directory:
+        # with:
+        #   scan-directory-path: .github/
 ```
+
+> [!IMPORTANT]  
+> By default only the `./.github` directory is scanned (recursively).
+> If some GitHub Composite actions are defined outside the `.github` directory,
+> consider adding steps to scan the additional directories by changing the `scan-directory-path`
+> parameter.
 
 ### PyPI
 

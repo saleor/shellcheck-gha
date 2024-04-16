@@ -2,16 +2,16 @@ name: Run ShellCheck
 on:
   push:
     paths:
-      - .github/workflows/**
+      - .github/
     branches:
       - main
   pull_request:
     paths:
-      - .github/workflows/**
+      - .github/
   workflow_dispatch:
     inputs:
       scan-directory:
-        default: .github/workflows
+        default: .github/
         description: The directory containing GitHub workflows YAML files to scan.
         required: false
 
@@ -21,7 +21,7 @@ permissions:
 jobs:
   check:
     env:
-      DEFAULT_SCAN_DIRECTORY: .github/workflows
+      DEFAULT_SCAN_DIRECTORY: .github/
 
     runs-on: ubuntu-22.04
     name: ShellCheck
