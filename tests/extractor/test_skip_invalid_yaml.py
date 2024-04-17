@@ -1,4 +1,3 @@
-# TODO: add test case that ensures it raises an exception if a YAML file is not YAML.
 import pytest
 import yaml.parser
 

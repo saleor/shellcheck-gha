@@ -114,7 +114,7 @@ class Extractor:
                     # Skip the file if we are not in a strict mode.
                     if self.raise_on_unsupported_yaml is False:
                         logger.warning(
-                            "Skipping invalid YAML file (%s): %s", yaml_path, exc
+                            "Skipping unsupported YAML file (%s): %s", yaml_path, exc
                         )
                         continue
                     raise UnknownYAMLFileException(exc) from exc

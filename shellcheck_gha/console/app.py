@@ -35,7 +35,8 @@ def parse_args(args: list[str] | None) -> argparse.Namespace:
             "Whether to exit with an error on when parsing non-GitHub workflow "
             "or composite action YAML files. Skipping is useful when a directory "
             "may be mixed with other YAML files "
-            "(e.g. config files such as .github/dependabot.yaml)."
+            "(e.g. config files such as .github/dependabot.yaml). "
+            "Unknown files are skipped by default."
         ),
         default=True,
     )
