@@ -2,7 +2,7 @@ import dataclasses
 from pathlib import Path
 from typing import Optional, Generator
 
-from pydantic import BaseModel, Field, computed_field
+from pydantic import BaseModel, Field, computed_field, model_validator, ValidationError
 
 
 class UnknownYAMLFileException(Exception):
@@ -10,6 +10,12 @@ class UnknownYAMLFileException(Exception):
     An exception raised when the parsed YAML file does not appear to be either
     a GitHub Workflow, or a GitHub Composite Action.
     """
+
+    def __init__(self, cause: ValidationError):
+        self.cause: ValidationError = cause
+
+    def __str__(self) -> str:
+        return str(self.cause)
 
 
 @dataclasses.dataclass
@@ -62,6 +68,12 @@ class GitHubYAML(BaseModel):
     jobs: Optional[dict[str, GitHubSteps]] = None
     runs: Optional[GitHubSteps] = None
 
+    @model_validator(mode="after")
+    def check_contains_one_of_required_fields(self) -> "GitHubYAML":
+        if self.jobs or self.runs:
+            return self
+        raise AssertionError("The YAML file should contain either 'jobs' or 'runs'.")
+
     def iter_shell_scripts(
         self, yaml_path: Path
     ) -> Generator[ShellSnippet, None, None]:
@@ -69,13 +81,6 @@ class GitHubYAML(BaseModel):
             for job in self.jobs.values():
                 for snippet in job.iter_shell_scripts(yaml_path):
                     yield snippet
-        elif self.runs:
+        if self.runs:
             for snippet in self.runs.iter_shell_scripts(yaml_path):
                 yield snippet
-        else:
-            # This code should never be reached unless a non-GitHub workflow or action
-            # YAML file was provided to the CLI.
-            raise UnknownYAMLFileException(
-                "The YAML file should contain either 'jobs' or 'runs'.",
-                yaml_path,
-            )

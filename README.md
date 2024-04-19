@@ -78,7 +78,7 @@ $ shellcheck-gha --help
 
 ```
 $ shellcheck-gha --help
-usage: shellcheck-gha [-h] [--default-shell DEFAULT_SHELL] [--verbose] [--debug] directory
+usage: shellcheck-gha [-h] [--default-shell DEFAULT_SHELL] [--verbose] [--debug] [--skip-unknown-files | --no-skip-unknown-files] [directory]
 
 positional arguments:
   directory
@@ -89,6 +89,9 @@ options:
                         The default shell running in the workflow(s)
   --verbose             Show more details about the execution.
   --debug               Add debug information (takes precedence over --verbose).
+  --skip-unknown-files, --no-skip-unknown-files
+                        Whether to exit with an error on when parsing non-GitHub workflow or composite action YAML files. Skipping is useful when a directory
+                        may be mixed with other YAML files (e.g. config files such as .github/dependabot.yaml). Unknown files are skipped by default.
 ```
 
 ## Example

@@ -5,8 +5,13 @@ import sys
 from pathlib import Path
 
 import yaml
+from pydantic import ValidationError
 
-from shellcheck_gha.models.github_action import GitHubYAML, ShellSnippet
+from shellcheck_gha.models.github_action import (
+    GitHubYAML,
+    ShellSnippet,
+    UnknownYAMLFileException,
+)
 from shellcheck_gha.models.shell_check_json1 import ShellCheckOutput
 
 logger = logging.getLogger(__name__)
@@ -24,6 +29,13 @@ class Finding:
 @dataclasses.dataclass
 class Extractor:
     directory: Path
+
+    # Whether to raise an exception when the parsed YAML
+    # file is not a GitHub workflow or action.
+    # ``raise_on_invalid_yaml=False`` is useful when a folder
+    # may contain other files (e.g., dependabot config files).
+    raise_on_unsupported_yaml: bool = True
+
     default_shell: str = DEFAULT_SHELL
 
     def iter_workflow_paths(self):
@@ -93,11 +105,22 @@ class Extractor:
 
         logger.info("Scanning the directory: %s", self.directory)
         for yaml_path in self.iter_workflow_paths():
-            num_files_scanned += 1
             logger.info("Checking the YAML file: %s", yaml_path)
 
             with yaml_path.open() as fp:
-                parsed_yaml = GitHubYAML.model_validate(yaml.safe_load(fp))
+                try:
+                    parsed_yaml = GitHubYAML.model_validate(yaml.safe_load(fp))
+                except ValidationError as exc:
+                    # Skip the file if we are not in a strict mode.
+                    if self.raise_on_unsupported_yaml is False:
+                        logger.warning(
+                            "Skipping unsupported YAML file (%s): %s", yaml_path, exc
+                        )
+                        continue
+                    raise UnknownYAMLFileException(exc) from exc
+
+            # Only increment if the file is successfully parsed.
+            num_files_scanned += 1
 
             for snippet in parsed_yaml.iter_shell_scripts(yaml_path):
                 num_snippets_scanned += 1
