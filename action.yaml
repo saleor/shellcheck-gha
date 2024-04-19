@@ -4,7 +4,7 @@ description: >
   using ShellCheck.
 inputs:
   scan-directory-path:
-    default: .github/workflows
+    default: .github/
     description: The directory containing GitHub workflows YAML files to scan.
     required: false
 runs:

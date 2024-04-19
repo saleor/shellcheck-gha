@@ -9,7 +9,7 @@ from shellcheck_gha.extractor import Extractor, DEFAULT_SHELL
 
 def parse_args(args: list[str] | None) -> argparse.Namespace:
     parser = argparse.ArgumentParser()
-    parser.add_argument("directory", nargs="?", default=".github/workflows")
+    parser.add_argument("directory", nargs="?", default=".github/")
     parser.add_argument(
         "--default-shell",
         help="The default shell running in the workflow(s)",
