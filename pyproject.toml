@@ -2,7 +2,7 @@
 name = "shellcheck-gha"
 description = "Extracts and checks shell scripts in Github Workflows for potential issues using shellcheck (https://github.com/koalaman/shellcheck)."
 readme = "README.md"
-version = "0.1.0"
+version = "0.1.2"
 authors = ["Saleor Commerce <hello@saleor.io>"]
 license = "BSD-3-Clause"
 repository = "https://github.com/saleor/shellcheck-gha"
