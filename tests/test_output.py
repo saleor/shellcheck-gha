@@ -17,6 +17,12 @@ def test_render_findings_human():
 
     actual = "".join(ResultRenderer().render(findings))
     expected = f"""\
+[\x1b[36mINFO\x1b[39m] In {samples.PATH / "composite-action.yaml"}:
+    Message: Double quote to prevent globbing and word splitting.
+    More information: https://www.shellcheck.net/wiki/SC2086
+    Code:
+        echo $BAD_COMPOSITE_ACTION
+             ^^^^^^^^^^^^^^^^^^^^^^
 [\x1b[36mINFO\x1b[39m] In {samples.PATH / "gh-workflow.yaml"}:
     Message: Double quote to prevent globbing and word splitting.
     More information: https://www.shellcheck.net/wiki/SC2086
@@ -29,11 +35,5 @@ def test_render_findings_human():
     Code:
         echo $BAD_JOB2
              ^^^^^^^^^^
-[\x1b[36mINFO\x1b[39m] In {samples.PATH / "composite-action.yaml"}:
-    Message: Double quote to prevent globbing and word splitting.
-    More information: https://www.shellcheck.net/wiki/SC2086
-    Code:
-        echo $BAD_COMPOSITE_ACTION
-             ^^^^^^^^^^^^^^^^^^^^^^
 """
     assert actual == expected

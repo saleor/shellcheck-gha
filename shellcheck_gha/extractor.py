@@ -40,7 +40,7 @@ class Extractor:
 
     def iter_workflow_paths(self):
         """Yields all yaml files recursively."""
-        for path in self.directory.rglob("*"):
+        for path in sorted(self.directory.rglob("*")):
             if (
                 path.is_file()
                 and not path.is_symlink()
